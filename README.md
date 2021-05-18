@@ -1,63 +1,76 @@
-Waitx:
+## OSN Assignment 5: CPU Scheduling Algorithms
 
-The waitx system call modifies defs.h, syscall.c, syscall.h, sysproc.c, 
-user.h and usys.S to add the system call.
+### Description:
 
-The waitx function is added in proc.c to execute the waitx system call
-using the time.c file. This file sends 2 pointers to the waitx call to 
+Add the `waitx` system call to update the creation time, end time and total run time of a process.
+
+Add the `ps` user command, which, given a process ID, shows information about it such as PID, priority, state, runtime, wait time, times run, current queue, etc.
+
+Add schedulers which can be set using the `SCHEDULER` flag. 
+
+Add `RR` (default), `FCFS`, `PBS` with functions to change the priority of a process, and `MLFQ` with the ability to change priority and promote or demote a process to 5 different queues accordingly.   
+
+### waitx:
+
+The `waitx` system call modifies `defs.h`, `syscall.c`, `syscall.h`, `sysproc.c`, 
+`user.h` and `usys.S` to add the system call.
+
+The `waitx` function is added in `proc.c` to execute the waitx system call
+using the `time.c` file. This file sends 2 pointers to the waitx call to 
 store wait time and run time and displays.
 
-In proc.h we added ctime, etime, iotime and rtime to store start time, 
-end time, I/O time and run time of the file. In allocproc function in
-proc.c we set the initial values of these fields. In proc.c these 
+In `proc.h` we added `ctime`, `etime`, `iotime` and `rtime` to store start time, 
+end time, I/O time and run time of the file. In `allocproc` function in
+`proc.c` we set the initial values of these fields. In `proc.c` these 
 values are updated and used to calculate the wait and run time.
 
 Ps:
 
-The ps system call was added similarly to waitx. It is a void function 
+The `ps` system call was added similarly to `waitx`. It is a void function 
 taking no values but for MLFQ it displays additional fields. It simply
 accesses the fields of all the processes and displays them by looping
-over the process table. It is implemented in ps.c.
+over the process table. It is implemented in `ps.c`.
 
-Set_priority:
+### set_priority:
 
-It is implemented like waitx and ps to create a system call from the 
-Set_priority.c file. It searches for the process whose pid matches
-the one entered and makes the needed changes. In allocproc() the 
-default priority for all processes is set to 60.
+It is implemented like `waitx` and `ps` to create a system call from the 
+`set_priority.c` file. It searches for the process whose pid matches
+the one entered and makes the needed changes. In `allocproc()` the 
+default priority for all processes is set to `60`.
 
+### Schedulers:
 
-The schedulers are implemented in proc.c and trap.c mainly.
+The schedulers are implemented in `proc.c` and `trap.c` mainly.
 
-RR:
+#### RR:
 This is the default policy used, no changes made here.
 
-FCFS:
+#### FCFS:
 The start time of each process is checked and once the process with 
-lowest time is found it is executed. It does not yield in the trap.c
+lowest time is found it is executed. It does not yield in the `trap.c`
 file to ensure FCFS is followed.
 
-PBS:
+#### PBS:
 
-A new field priority is added in proc struct. The process with the 
+A new field priority is added in `proc` struct. The process with the 
 highest priority is found after looping through the ptable and is 
 executed. If it is not the only one, it yields and another process 
 with equal or higher priority takes its place because of the yield
 function and round robin scheduler.
 
-MLFQ:
+#### MLFQ:
 
 We create an array of queues where all processes are stored. We add
 the fields queue, ticks, enter, change to implement MLFQ.
 
-Whenever a process exceeds the time in qticks, it is removed from the
+Whenever a process exceeds the time in `qticks`, it is removed from the
 present queue and sent to a lower queue, unless it is the lowest queue. 
-However, if it has been there for more than 30 ticks, it is removed and 
-sent to a higher queue. Addq and remq add and remove a process from the 
+However, if it has been there for more than `30` ticks, it is removed and 
+sent to a higher queue. `Addq` and `remq` add and remove a process from the 
 queue specified. Incr increases the clock ticks and changeq reassigns the 
 
-The userinit, fork, kill, wakeup1, yield, wait, waitx functions are changed
-as well to ensure MLFQ executes correctly. In trap.c we check if a process
+The `userinit`, `fork`, `kill`, `wakeup1`, `yield`, `wait`, `waitx` functions are changed
+as well to ensure MLFQ executes correctly. In `trap.c` we check if a process
 exceeds its time slice to cause it to yield.
 
 
