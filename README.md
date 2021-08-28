@@ -24,7 +24,7 @@ end time, I/O time and run time of the file. In `allocproc` function in
 `proc.c` we set the initial values of these fields. In `proc.c` these 
 values are updated and used to calculate the wait and run time.
 
-Ps:
+### ps:
 
 The `ps` system call was added similarly to `waitx`. It is a void function 
 taking no values but for MLFQ it displays additional fields. It simply
@@ -71,10 +71,14 @@ queue specified. Incr increases the clock ticks and changeq reassigns the
 
 The `userinit`, `fork`, `kill`, `wakeup1`, `yield`, `wait`, `waitx` functions are changed
 as well to ensure MLFQ executes correctly. In `trap.c` we check if a process
-exceeds its time slice to cause it to yield.
+exceeds its time slice to cause it to yield.'
+
+### Report
+
+Analyze the difference between the different schedulers and use a benchmark function to determine which one is fastest.
 
 
-***Original README***
+## **Original README**
 
 
 
