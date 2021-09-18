@@ -1,5 +1,7 @@
 ## OSN Assignment 5: CPU Scheduling Algorithms
 
+#### Arushi Mittal (2019101120)
+
 ### Description:
 
 Add the `waitx` system call to update the creation time, end time and total run time of a process.
